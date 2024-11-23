@@ -25,6 +25,13 @@ public static class ContextExtensions
         var AuthorFaker = new Faker<Author>()
             .RuleFor(c => c.FullName, f => f.Name.FullName());
 
+        var authors = AuthorFaker.Generate(50);
+
+        var publisherFaker = new Faker<Publisher>()
+            .RuleFor(p => p.Name, f => f.Name.FullName());
+
+        var publishers = publisherFaker.Generate(50);
+
         var books = bookFaker.Generate(100);
         foreach ( var book in books )
         {

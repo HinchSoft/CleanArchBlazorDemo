@@ -8,7 +8,7 @@ var booksDb = postgres.AddDatabase("BooksDb");
 var booksApi = builder.AddProject<Projects.BookStore_Api>("bookstore-api")
     .WithReference(booksDb);
 
-builder.AddProject<Projects.BookStore_UI>("bookstore-ui")
+builder.AddProject<Projects.Bookstore_UI>("bookstore-ui")
     .WithReference(booksApi);
    
 

@@ -4,22 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookStore.Domain.Model
+namespace BookStore.Domain.Model;
+
+public abstract record PublicationInfo;
+
+public sealed record Published(PublicationDate PublishedOn):PublicationInfo;
+public sealed record Planned(PublicationDate PlannedFor):PublicationInfo;
+public sealed record NotPlannedYet : PublicationInfo;
+
+public static class PublicationInfoExtensions
 {
-    public class PublicationInfo
-    {
-        public PartialDate? PublicationDate { get; private set; }
-        public bool IsPublished { get; private set; }
-
-        public static PublicationInfo CreateUnpublished() =>
-            new(null, false);
-        public static PublicationInfo CreatePlanned(PartialDate date) =>
-            new(date, false);
-        public static PublicationInfo CreatePublished(PartialDate date) =>
-            new(date, true);
-
-        public PublicationInfo(PartialDate? publicationDate, bool isPublished) =>
-            (PublicationDate, IsPublished) = (publicationDate, isPublished);
-
-    }
+    public static TResult Map<TResult>(this PublicationInfo publication,
+        Func<Published, TResult> published,
+        Func<Planned, TResult> planned,
+        Func<NotPlannedYet, TResult> notPlannedYet) =>
+        publication switch
+        {
+            Published pub => published(pub),
+            Planned plan => planned(plan),
+            NotPlannedYet notPlanned => notPlannedYet(notPlanned),
+            _ => throw new ArgumentException($"{publication} is not supported.")
+        };
 }

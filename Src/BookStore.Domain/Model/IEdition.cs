@@ -10,12 +10,15 @@ public interface IEdition
 {
 }
 
-public class Ordinal
+public class Ordinal:IEdition
 {
-    int number { get; set; }
+    public int Number { get; private set; }
+
+    public Ordinal(int number)=>Number = number;
+
 }
 
-public class Seasonal
+public class Seasonal:IEdition
 {
     public Season Season { get; set; }
     public int Year { get; set; }

@@ -19,14 +19,8 @@ namespace BookStore.Application.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Book>(b =>
-            {
-                b.HasKey(e => e.Id);
-                b.Property(e => e.Culture)
-                    .HasConversion(culture => culture.Name, name => new System.Globalization.CultureInfo(name));
-                // register Release as a complex type
-                b.ComplexProperty(e => e.Release).Configure();
-            });
+            modelBuilder.Entity<Book>().Configure();
+
         }
     }
 }
