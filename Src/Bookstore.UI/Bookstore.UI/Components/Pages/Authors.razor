@@ -1,0 +1,36 @@
+﻿@page "/authors"
+@inject BookStoreApiClient bookStoreApi
+@using Microsoft.AspNetCore.Components.QuickGrid
+
+<h3>Authors</h3>
+
+<QuickGrid ItemsProvider="authourProvider" Pagination="pagination">
+    <PropertyColumn Property="@(a => a.FullName)" />
+</QuickGrid>
+
+<Paginator State="pagination"/>
+
+@code {
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    GridItemsProvider<Author>? authourProvider;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var totalItems = await bookStoreApi.GetAuthorsCountAsync();
+
+        authourProvider = async req =>
+        {
+
+
+            return GridItemsProviderResult.From<Author>(
+                await bookStoreApi.GetAuthorsAsync(req.StartIndex, req.Count ?? 0,req.CancellationToken),
+                totalItems
+            );
+        };
+
+
+    }
+
+
+}

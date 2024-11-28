@@ -18,28 +18,34 @@ public static class ContextExtensions
             new CultureInfo("fr-FR")
         };
 
-        var bookFaker = new Faker<Book>()
-            .RuleFor(c => c.Title, f => f.Lorem.Slug(Randomizer.Seed.Next(1, 4)))
-            .RuleFor(c => c.Culture, f => f.PickRandom(sampleCultures) );
-
         var AuthorFaker = new Faker<Author>()
-            .RuleFor(c => c.FullName, f => f.Name.FullName());
-
-        var authors = AuthorFaker.Generate(50);
+            .RuleFor(c => c.FullName, f => f.Name.FullName())
+            .RuleFor(c=> c.DateOfBirth, f=>f.Date.Past(100,DateTime.UtcNow.AddYears(-16)));
 
         var publisherFaker = new Faker<Publisher>()
             .RuleFor(p => p.Name, f => f.Name.FullName());
 
         var publishers = publisherFaker.Generate(50);
 
-        var books = bookFaker.Generate(100);
-        foreach ( var book in books )
-        {
+        var authors = AuthorFaker.Generate(50);
 
-        }
+        await context.Publishers.AddRangeAsync(publishers);
+        await context.Authors.AddRangeAsync(authors);
+
+        //var bookFaker = new Faker<Book>()
+        //    .RuleFor(c => c.Title, f => f.Lorem.Slug(Randomizer.Seed.Next(1, 4)))
+        //    .RuleFor(c => c.Culture, f => f.PickRandom(sampleCultures) );
 
 
-        await context.Books.AddRangeAsync(books);
+
+        //var books = bookFaker.Generate(100);
+        //foreach ( var book in books )
+        //{
+
+        //}
+
+
+        //await context.Books.AddRangeAsync(books);
 
         return await context.SaveChangesAsync();
     }

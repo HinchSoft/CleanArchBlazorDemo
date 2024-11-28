@@ -12,8 +12,8 @@ public class Release
     public IEdition Edition { get; private set; }
     public PublicationInfo Publication { get; private set; }
 
-    //public Release(Publisher publisher, IEdition edition, PublicationInfo publication) =>
-    //    (Publisher, Edition, Publication) = (publisher, edition, publication);
+    public Release(Publisher publisher, IEdition edition, PublicationInfo publication) =>
+        (Publisher, Edition, Publication) = (publisher, edition, publication);
 
     private Type PublicationKind => Publication.GetType();
 

@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddNpgsqlDbContext<BookStoreContext>("BooksDb");
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddApiVersioning(options =>
 {
