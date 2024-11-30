@@ -23,21 +23,60 @@ namespace BookStore.Api.Controllers
         /// </summary>
         /// <param name="skip">Number of Authors to skip</param>
         /// <param name="take">Number of Authors to return</param>
+        /// <param name="orderby">comma separated list of order by fields "Ascending|Descending-column"</param>
         /// <param name="count">Return only the count of Authors</param>
         /// <returns></returns>
         [ProducesResponseType<int>(StatusCodes.Status200OK)]
         [ProducesResponseType<IAsyncEnumerable<Author>>(StatusCodes.Status200OK)]
         [HttpGet]
-        public IActionResult GetAuthors([FromQuery]int skip=0, [FromQuery]int take = 0, [FromQuery]bool count = false)
+        public IActionResult GetAuthors([FromQuery]int skip=0, [FromQuery]int take = 0, [FromQuery]string? orderby = null, [FromQuery]bool count = false)
         {
             if (count)
                 return Ok(_storeContext.Authors.Count());
 
-            var qAuthors = _storeContext.Authors
-                .OrderBy(a=>a.Id)
-                .Skip(skip)
-                .AsQueryable();
+            var qAuthors = _storeContext.Authors.AsQueryable();
+                
+            
+            if(string.IsNullOrEmpty(orderby))
+            {
+                qAuthors = qAuthors.OrderBy(a => a.Id);
+            }
+            else
+            {
+                //when ordering the first order returns a IOrderedQueryable that additional ordering 
+                // should be appended to.
+                // EF.Property is used to get the key selector of the named column
+                var sortArray = orderby.Split(',');
+                IOrderedQueryable<Domain.Model.Author>? sortOrder=null;
+                foreach(var sort in sortArray)
+                {
+                    var ss = sort.Split('-');
+                    if (sortOrder is null)
+                    {
+                        if (ss[0] == "Ascending")
+                            sortOrder = qAuthors.OrderBy(p => EF.Property<Domain.Model.Author>(p, ss[1]));
+                        else
+                            sortOrder = qAuthors.OrderByDescending(p => EF.Property<Domain.Model.Author>(p, ss[1]));
+                    }
+                    else
+                    {
+                        if (ss[0] == "Ascending")
+                            sortOrder = sortOrder.ThenBy(p => EF.Property<Domain.Model.Author>(p, ss[1]));
+                        else
+                            sortOrder = sortOrder.ThenByDescending(p => EF.Property<Domain.Model.Author>(p, ss[1]));
+                    }
+                }
+                if (sortOrder is null)
+                    qAuthors = qAuthors.OrderBy(a => a.Id);
+                else
+                    qAuthors = sortOrder.ThenBy(a => a.Id);
+            }
 
+            // Skip and take to be after any ordering
+            if (skip > 0)
+            {
+                qAuthors = qAuthors.Skip(skip);
+            }
             if(take>0)
             {
                 qAuthors = qAuthors.Take(take);
