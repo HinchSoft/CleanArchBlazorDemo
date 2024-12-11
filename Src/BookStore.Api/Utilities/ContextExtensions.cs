@@ -32,20 +32,22 @@ public static class ContextExtensions
         await context.Publishers.AddRangeAsync(publishers);
         await context.Authors.AddRangeAsync(authors);
 
-        //var bookFaker = new Faker<Book>()
-        //    .RuleFor(c => c.Title, f => f.Lorem.Slug(Randomizer.Seed.Next(1, 4)))
-        //    .RuleFor(c => c.Culture, f => f.PickRandom(sampleCultures) );
+        var bookFaker = new Faker<Book>()
+            .CustomInstantiator(f =>
+            {
+                var title = f.Lorem.Slug(Randomizer.Seed.Next(1, 4));
+                var culture = f.PickRandom(sampleCultures);
+                var bookauths = f.PickRandom(authors, f.Random.Int(1, 3)).ToList();
+                var bookPub = f.PickRandom(publishers);
+                var pubInfo = new NotPlannedYet();
+                var release = new Release(bookPub, new Ordinal(f.Random.Int(1, 10)),pubInfo);
+                return new Book(title, culture, release, bookauths);
+            });
+
+        var books = bookFaker.Generate(100);
 
 
-
-        //var books = bookFaker.Generate(100);
-        //foreach ( var book in books )
-        //{
-
-        //}
-
-
-        //await context.Books.AddRangeAsync(books);
+        await context.Books.AddRangeAsync(books);
 
         return await context.SaveChangesAsync();
     }

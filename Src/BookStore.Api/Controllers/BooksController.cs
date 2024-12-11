@@ -9,37 +9,37 @@ namespace BookStore.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AuthorsController : ControllerBase
+    public class BooksController : ControllerBase
     {
         private readonly BookStoreContext _storeContext;
 
-        public AuthorsController(BookStoreContext storeContext)
+        public BooksController(BookStoreContext storeContext)
         {
             _storeContext = storeContext;
         }
 
         /// <summary>
-        /// Returns a collection of Authors or the count of Authors if Count = true
+        /// Returns a collection of Books or the count of Books if Count = true
         /// </summary>
-        /// <param name="skip">Number of Authors to skip</param>
-        /// <param name="take">Number of Authors to return</param>
+        /// <param name="skip">Number of Books to skip</param>
+        /// <param name="take">Number of Books to return</param>
         /// <param name="orderby">comma separated list of order by fields "Ascending|Descending-column"</param>
-        /// <param name="count">Return only the count of Authors</param>
+        /// <param name="count">Return only the count of Books</param>
         /// <returns></returns>
         [ProducesResponseType<int>(StatusCodes.Status200OK)]
-        [ProducesResponseType<IAsyncEnumerable<Author>>(StatusCodes.Status200OK)]
+        [ProducesResponseType<IAsyncEnumerable<Book>>(StatusCodes.Status200OK)]
         [HttpGet]
-        public IActionResult GetAuthors([FromQuery]int skip=0, [FromQuery]int take = 0, [FromQuery]string? orderby = null, [FromQuery]bool count = false)
+        public IActionResult GetBooks([FromQuery]int skip=0, [FromQuery]int take = 0, [FromQuery]string? orderby = null, [FromQuery]bool count = false)
         {
             if (count)
-                return Ok(_storeContext.Authors.Count());
+                return Ok(_storeContext.Books.Count());
 
-            var qAuthors = _storeContext.Authors.AsQueryable();
+            var qBooks = _storeContext.Books.Include(b=>b.Authors).AsQueryable();
                 
             
             if(string.IsNullOrEmpty(orderby))
             {
-                qAuthors = qAuthors.OrderBy(a => a.Id);
+                qBooks = qBooks.OrderBy(a => a.Id);
             }
             else
             {
@@ -47,16 +47,16 @@ namespace BookStore.Api.Controllers
                 // should be appended to.
                 // EF.Property is used to get the key selector of the named column
                 var sortArray = orderby.Split(',');
-                IOrderedQueryable<Domain.Model.Author>? sortOrder=null;
+                IOrderedQueryable<Domain.Model.Book>? sortOrder=null;
                 foreach(var sort in sortArray)
                 {
                     var ss = sort.Split('-');
                     if (sortOrder is null)
                     {
                         if (ss[0] == "Ascending")
-                            sortOrder = qAuthors.OrderBy(p => EF.Property<Domain.Model.Author>(p, ss[1]));
+                            sortOrder = qBooks.OrderBy(p => EF.Property<Domain.Model.Author>(p, ss[1]));
                         else
-                            sortOrder = qAuthors.OrderByDescending(p => EF.Property<Domain.Model.Author>(p, ss[1]));
+                            sortOrder = qBooks.OrderByDescending(p => EF.Property<Domain.Model.Author>(p, ss[1]));
                     }
                     else
                     {
@@ -67,22 +67,22 @@ namespace BookStore.Api.Controllers
                     }
                 }
                 if (sortOrder is null)
-                    qAuthors = qAuthors.OrderBy(a => a.Id);
+                    qBooks = qBooks.OrderBy(a => a.Id);
                 else
-                    qAuthors = sortOrder.ThenBy(a => a.Id);
+                    qBooks = sortOrder.ThenBy(a => a.Id);
             }
 
             // Skip and take to be after any ordering
             if (skip > 0)
             {
-                qAuthors = qAuthors.Skip(skip);
+                qBooks = qBooks.Skip(skip);
             }
             if(take>0)
             {
-                qAuthors = qAuthors.Take(take);
+                qBooks = qBooks.Take(take);
             }
 
-            return Ok(qAuthors.Select(a=>a.MapToDto()).AsAsyncEnumerable());
+            return Ok( qBooks.Select(b=>b.MapToDto()).AsAsyncEnumerable());
         }
 
         [HttpPut]

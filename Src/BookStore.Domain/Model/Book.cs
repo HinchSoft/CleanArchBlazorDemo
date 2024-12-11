@@ -19,11 +19,10 @@ namespace BookStore.Domain.Model
             set=>Release.Publisher=value; 
         }
 
-        public IAuthorsCollection Authors => new BookAuthorsCollectionWrapper(this, _authorsCollection);
-        private ICollection<Author> _authorsCollection;
+        public IAuthorsCollection Authors { get; set; } = new BookAuthorsCollectionWrapper();
 
-        private Book (int id, string title, CultureInfo culture, Release release, IEnumerable<Author> authors)
-            : this(id,title,culture)
+        public Book (string title, CultureInfo culture, Release release, ICollection<Author> authors)
+            : this(0,title,culture)
         {
             Release = release;
             Authors.AppendMany(authors);
