@@ -41,7 +41,7 @@ public class BookAuthorsCollectionWrapper : IAuthorsCollection
         return _authors.GetEnumerator();
     }
 
-    public int InsertBefore(Author author, Author target=null)
+    public int InsertBefore(Author author, Author? target=null)
     {
         int idx = 0;
         if (_authors.Contains(author))
@@ -54,6 +54,25 @@ public class BookAuthorsCollectionWrapper : IAuthorsCollection
         {
             idx = _authors.IndexOf(target);
             idx = (idx == -1) ? 0 : idx;
+            _authors.Insert(idx, author);
+        }
+        ReIndex();
+        return idx;
+    }
+    public int InsertAfter(Author author, Author? target=null)
+    {
+        int idx = 0;
+        if (_authors.Contains(author))
+            _authors.Remove(author);
+        if (target == null)
+        {
+            _authors.Add(author);
+            idx = _authors.Count - 1;
+        }
+        else
+        {
+            idx = _authors.IndexOf(target);
+            idx = (idx == -1) ? 0 : idx + 1;
             _authors.Insert(idx, author);
         }
         ReIndex();
