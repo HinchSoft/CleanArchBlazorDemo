@@ -8,22 +8,16 @@ namespace BookStore.Domain.Model;
 
 public class Release
 {
-    public Publisher Publisher { get; set; }
-    public IEdition Edition { get; private set; }
     public PublicationInfo Publication { get; private set; }
 
-    public Release(Publisher publisher, IEdition edition, PublicationInfo publication) =>
-        (Publisher, Edition, Publication) = (publisher, edition, publication);
+    public Release(PublicationInfo publication) => Publication = publication;
 
     private Type PublicationKind => Publication.GetType();
 
-    private PublicationDate? publicationDate => Publication.Map<PublicationDate?>(
-        published=>published.PublishedOn, planned=>planned.PlannedFor,notPlannedYet=>null);
+    private PublicationDate? PublicationDate => Publication.PublicationDate;
 
-    private Release(Type PublicationKind, PublicationInfo publicationInfo, IEdition edition)
+    private Release(Type publicationKind,PublicationDate? publicationDate) // used by EF Core
     {
-        Publisher = default!;
-        Edition = edition;
-
+        Publication = PublicationInfo.Map(publicationKind,publicationDate);
     }
 }

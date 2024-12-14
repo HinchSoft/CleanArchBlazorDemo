@@ -6,23 +6,42 @@ using System.Threading.Tasks;
 
 namespace BookStore.Domain.Model;
 
-public abstract record PublicationInfo;
-
-public sealed record Published(PublicationDate PublishedOn):PublicationInfo;
-public sealed record Planned(PublicationDate PlannedFor):PublicationInfo;
-public sealed record NotPlannedYet : PublicationInfo;
-
-public static class PublicationInfoExtensions
+public abstract class PublicationInfo
 {
-    public static TResult Map<TResult>(this PublicationInfo publication,
-        Func<Published, TResult> published,
-        Func<Planned, TResult> planned,
-        Func<NotPlannedYet, TResult> notPlannedYet) =>
-        publication switch
+    public abstract PublicationDate? PublicationDate { get; }
+    public static PublicationInfo Map(Type type,PublicationDate? publicationDate)
+    {
+        return type.Name switch
         {
-            Published pub => published(pub),
-            Planned plan => planned(plan),
-            NotPlannedYet notPlanned => notPlannedYet(notPlanned),
-            _ => throw new ArgumentException($"{publication} is not supported.")
+            "Published" => new Published(publicationDate),
+            "Planned" => new Planned(publicationDate),
+            "NotPlannedYet" => new NotPlannedYet(),
         };
+    }
+}
+
+public sealed class Published(PublicationDate PublishedOn) : PublicationInfo
+{
+    public override PublicationDate? PublicationDate => PublishedOn;
+    public override string ToString()
+    {
+        return $"Published on {PublishedOn.ToString()}";
+    }
+}
+
+public sealed class Planned(PublicationDate PlannedFor) : PublicationInfo
+{
+    public override PublicationDate? PublicationDate => PlannedFor;
+    public override string ToString()
+    {
+        return $"Planned for {PlannedFor.ToString()}";
+    }
+}
+public sealed class NotPlannedYet : PublicationInfo
+{
+    public override PublicationDate? PublicationDate => null;
+    public override string ToString()
+    {
+        return "No planned date";
+    }
 }

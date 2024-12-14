@@ -18,9 +18,65 @@ public static class ContextExtensions
             new CultureInfo("fr-FR")
         };
 
+        var pubDates = new Faker<PublicationDate>[]
+        {
+            new Faker<PublicationDate>()
+                .CustomInstantiator(f =>
+                {
+                    return new FullDate(f.Date.PastDateOnly(10));
+                }),
+            new Faker<PublicationDate>()
+                .CustomInstantiator(f =>
+                {
+                    var dt=f.Date.PastDateOnly(10);
+                    return new YearMonth(dt.Year,dt.Month);
+                }),
+            new Faker<PublicationDate>()
+                .CustomInstantiator(f =>
+                {
+                    var dt=f.Date.PastDateOnly(10);
+                    return new YearOnly(dt.Year);
+                }),
+        };
+
+        var pubInfos = new Faker<PublicationInfo>[]
+        {
+            new Faker<PublicationInfo>()
+                .CustomInstantiator(f =>
+                {
+                    return new NotPlannedYet();
+                }),
+            new Faker<PublicationInfo>()
+                .CustomInstantiator(f =>
+                {
+                    var date=f.PickRandom(pubDates).Generate();
+                    return new Planned(date);
+                }),
+            new Faker<PublicationInfo>()
+                .CustomInstantiator(f =>
+                {
+                    var date=f.PickRandom(pubDates).Generate();
+                    return new Published(date);
+                })
+        };
+
+        var editions = new Faker<IEdition>[]
+        {
+            new Faker<IEdition>()
+                .CustomInstantiator(f =>
+                {
+                    return new Ordinal(f.Random.Int(1, 10));
+                }),
+            new Faker<IEdition>()
+                .CustomInstantiator(f =>
+                {
+                    return new Seasonal(f.PickRandom<Season>(),f.Date.PastDateOnly(10).Year);
+                })
+        };
+
         var AuthorFaker = new Faker<Author>()
             .RuleFor(c => c.FullName, f => f.Name.FullName())
-            .RuleFor(c=> c.DateOfBirth, f=>f.Date.Past(100,DateTime.UtcNow.AddYears(-16)));
+            .RuleFor(c => c.DateOfBirth, f => f.Date.Past(100, DateTime.UtcNow.AddYears(-16)));
 
         var publisherFaker = new Faker<Publisher>()
             .RuleFor(p => p.Name, f => f.Name.FullName());
@@ -39,9 +95,11 @@ public static class ContextExtensions
                 var culture = f.PickRandom(sampleCultures);
                 var bookauths = f.PickRandom(authors, f.Random.Int(1, 3)).ToList();
                 var bookPub = f.PickRandom(publishers);
-                var pubInfo = new NotPlannedYet();
-                var release = new Release(bookPub, new Ordinal(f.Random.Int(1, 10)),pubInfo);
-                return new Book(title, culture, release, bookauths);
+                var pubInfo = f.PickRandom(pubInfos).Generate();
+                var bookEdi = f.PickRandom(editions).Generate();
+
+                var release = new Release(pubInfo);
+                return new Book(title, culture, bookEdi, release, bookPub, bookauths);
             });
 
         var books = bookFaker.Generate(100);

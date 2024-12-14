@@ -4,5 +4,8 @@ public record Book
 (
     string Title,
     string Culture,
-    Author[] Authors
+    string Edition,
+    Author[] Authors,
+    string Publisher,
+    Release Release
 );

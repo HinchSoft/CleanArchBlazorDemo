@@ -12,20 +12,21 @@ namespace BookStore.Domain.Model
         public int Id { get; private set; }
         public string Title { get; private set; }
         public CultureInfo Culture { get; private set; }
+        public IEdition Edition { get; private set; }
+
         public Release Release { get;  private set; }
 
-        public Publisher Publisher { 
-            get=>Release.Publisher; 
-            set=>Release.Publisher=value; 
-        }
+        public Publisher Publisher {  get; private set; }
 
         public IAuthorsCollection Authors { get; set; } = new BookAuthorsCollectionWrapper();
 
-        public Book (string title, CultureInfo culture, Release release, ICollection<Author> authors)
+        public Book (string title, CultureInfo culture, IEdition edition, Release release,Publisher publisher, ICollection<Author> authors)
             : this(0,title,culture)
         {
             Release = release;
             Authors.AppendMany(authors);
+            Publisher = publisher;
+            Edition = edition;
         }   
 
         private Book(int id, string title, CultureInfo culture)  // Used by EF Core
@@ -35,6 +36,7 @@ namespace BookStore.Domain.Model
             Title = title;
             Culture = culture;
             Release = default;
+            Publisher = default;
         }
 
     }
