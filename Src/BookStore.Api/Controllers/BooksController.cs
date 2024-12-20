@@ -1,5 +1,6 @@
 ﻿using BookStore.Api.Dtos;
 using BookStore.Application.Data;
+using BookStore.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -47,9 +48,8 @@ namespace BookStore.Api.Controllers
         }
 
         [HttpPut]
-        public IActionResult PutBook(Book author)
+        public IActionResult PutBook(Book book)
         {
-
             return Ok();
         }
     }

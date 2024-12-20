@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using BookStore.Domain.Model;
 using System.Globalization;
-using BookStore.Application.Data;
+using BookStore.Infrastructure.Data;
 
 namespace BookStore.Api.Utilities;
 

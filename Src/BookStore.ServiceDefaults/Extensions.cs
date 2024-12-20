@@ -54,7 +54,9 @@ namespace Microsoft.Extensions.Hosting
                 {
                     metrics.AddAspNetCoreInstrumentation()
                         .AddHttpClientInstrumentation()
-                        .AddRuntimeInstrumentation();
+                        .AddRuntimeInstrumentation()
+                        .AddPrometheusExporter();
+                        
                 })
                 .WithTracing(tracing =>
                 {

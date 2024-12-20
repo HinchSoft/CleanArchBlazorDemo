@@ -9,7 +9,7 @@ var booksApi = builder.AddProject<Projects.BookStore_Api>("bookstore-api")
     .WithReference(booksDb);
 
 builder.AddProject<Projects.Bookstore_UI>("bookstore-ui")
-    .WithReference(booksApi);
+    .WithReference(booksDb);
    
 
 builder.Build().Run();

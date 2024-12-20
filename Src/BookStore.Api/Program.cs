@@ -1,12 +1,23 @@
 
 using Asp.Versioning;
-using BookStore.Application.Data;
+using BookStore.Core.Repositories;
+using BookStore.Infrastructure.Data;
+using CommonAsp.Middleware;
+using CommonCore.Services;
+using HashidsNet;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddNpgsqlDbContext<BookStoreContext>("BooksDb");
+
+builder.Services.AddRepositories();
+builder.Services.AddScoped<AuthorRepository>();
+
+builder.Services.AddScoped<IPageInfoProvider,PageInfoProvider>();
+builder.Services.AddScoped<PaginationService>();
+
 
 builder.Services.AddHttpContextAccessor();
 
@@ -68,5 +79,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ApiPagination>();
 
 app.Run();

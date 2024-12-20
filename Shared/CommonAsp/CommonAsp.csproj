@@ -6,14 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-
   <ItemGroup>
-    <ProjectReference Include="..\BookStore.Domain\BookStore.Domain.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
-
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\CommonCore\CommonCore.csproj" />
   </ItemGroup>
-
 </Project>

@@ -1,39 +1,38 @@
 ﻿@page "/authors"
 @rendermode InteractiveServer
-@inject BookStoreApiClient bookStoreApi
 
 <PageTitle>Authors</PageTitle>
 
 <h3>Authors</h3>
 
-<QuickGrid ItemsProvider="authorProvider" Pagination="pagination">
+@* <QuickGrid ItemsProvider="authorProvider" Pagination="pagination">
     <PropertyColumn Property="@(a => a.FullName)" Sortable="true" />
     <PropertyColumn Property="@(a => a.DateOfBirth)" Format="yyyy-MM-dd" Sortable="true"/>
 </QuickGrid>
 
-<Paginator State="pagination"/>
+ *@<Paginator State="pagination"/>
 
 @code {
     PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
-    GridItemsProvider<Author>? authorProvider;
+    // GridItemsProvider<Author>? authorProvider;
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        var totalItems = await bookStoreApi.GetAuthorsCountAsync();
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var totalItems = await bookStoreApi.GetAuthorsCountAsync();
 
-        authorProvider = async req =>
-        {
-            var sortprop=req.GetSortByProperties();
+    //     authorProvider = async req =>
+    //     {
+    //         var sortprop=req.GetSortByProperties();
 
-            return GridItemsProviderResult.From<Author>(
-                await bookStoreApi.GetAuthorsAsync(req.StartIndex, req.Count ?? 0, sortprop, req.CancellationToken),
-                totalItems
-            );
-        };
+    //         return GridItemsProviderResult.From<Author>(
+    //             await bookStoreApi.GetAuthorsAsync(req.StartIndex, req.Count ?? 0, sortprop, req.CancellationToken),
+    //             totalItems
+    //         );
+    //     };
 
 
-    }
+    // }
 
 
 }

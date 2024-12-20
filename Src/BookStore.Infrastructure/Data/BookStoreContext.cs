@@ -1,12 +1,13 @@
 ﻿using BookStore.Domain.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BookStore.Application.Data
+namespace BookStore.Infrastructure.Data
 {
     public class BookStoreContext : DbContext
     {
@@ -22,8 +23,8 @@ namespace BookStore.Application.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
-
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+            
         }
     }
 }

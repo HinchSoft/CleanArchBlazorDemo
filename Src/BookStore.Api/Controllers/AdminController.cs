@@ -1,5 +1,5 @@
 ﻿using BookStore.Api.Utilities;
-using BookStore.Application.Data;
+using BookStore.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.Api.Controllers;

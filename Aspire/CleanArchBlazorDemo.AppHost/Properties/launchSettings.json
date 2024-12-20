@@ -13,6 +13,18 @@
         "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22008"
       }
     },
+    "https-Grafana": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:17249;http://localhost:15112",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_ENVIRONMENT": "Development",
+        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://192.168.1.4:9090",
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22008"
+      }
+    },
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,

@@ -7,10 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BookStore.Core\BookStore.Core.csproj" />
+    <ProjectReference Include="..\..\BookStore.Infrastructure\BookStore.Infrastructure.csproj" />
     <ProjectReference Include="..\..\BookStore.ServiceDefaults\BookStore.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Bookstore.UI.Client\Bookstore.UI.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.2.1" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,6 @@
-﻿using BookStore.Domain.Model;
+﻿
+using BookStore.Domain.Model;
+using BookStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -14,7 +16,8 @@ internal class BookConfiguration : IEntityTypeConfiguration<Book>
 {
     public void Configure(EntityTypeBuilder<Book> builder)
     {
-        builder.HasKey(e => e.Id);
+        builder.HasKey("Id");
+
         builder.Ignore(e => e.Release);
 
         builder.HasMany(e => e.Authors).WithMany()

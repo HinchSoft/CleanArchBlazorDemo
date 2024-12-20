@@ -1,9 +1,7 @@
 ﻿using BookStore.Api.Dtos;
-using BookStore.Application.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
+using BookStore.Core.Repositories;
+using CommonCore.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Api.Controllers
 {
@@ -11,33 +9,17 @@ namespace BookStore.Api.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly BookStoreContext _storeContext;
+        private readonly AuthorRepository _authorRepository;
 
-        public AuthorsController(BookStoreContext storeContext)
+        public AuthorsController(AuthorRepository authorRepository)
         {
-            _storeContext = storeContext;
+            _authorRepository = authorRepository;
         }
 
-        /// <summary>
-        /// Returns a collection of Authors or the count of Authors if Count = true
-        /// </summary>
-        /// <param name="skip">Number of Authors to skip</param>
-        /// <param name="take">Number of Authors to return</param>
-        /// <param name="orderby">comma separated list of order by fields "Ascending|Descending-column"</param>
-        /// <param name="count">Return only the count of Authors</param>
-        /// <returns></returns>
-        [ProducesResponseType<int>(StatusCodes.Status200OK)]
-        [ProducesResponseType<IAsyncEnumerable<Author>>(StatusCodes.Status200OK)]
         [HttpGet]
-        public IActionResult GetAuthors([FromQuery]int skip=0, [FromQuery]int take = 0, [FromQuery]string? orderby = null, [FromQuery]bool count = false)
+        public IAsyncEnumerable<Author> GetAuthors()
         {
-            if (count)
-                return Ok(_storeContext.Authors.Count());
-
-            var qAuthors = _storeContext.Authors.AsQueryable();
-            qAuthors = qAuthors.Page(skip, take, a=>a.Id, orderby);    
-            
-            return Ok(qAuthors.Select(a=>a.MapToDto()).AsAsyncEnumerable());
+            return _authorRepository.GetAllAsync(a => a.MapToDto());
         }
 
         [HttpPut]

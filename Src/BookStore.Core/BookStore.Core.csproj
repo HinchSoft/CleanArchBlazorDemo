@@ -6,14 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-
   <ItemGroup>
-    <ProjectReference Include="..\BookStore.Domain\BookStore.Domain.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\..\Shared\CommonCore\CommonCore.csproj" />
   </ItemGroup>
 
 </Project>
