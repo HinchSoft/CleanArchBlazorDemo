@@ -14,9 +14,11 @@ builder.AddNpgsqlDbContext<BookStoreContext>("BooksDb");
 
 builder.Services.AddRepositories();
 builder.Services.AddScoped<AuthorRepository>();
+builder.Services.AddMapping();
 
 builder.Services.AddScoped<IPageInfoProvider,PageInfoProvider>();
 builder.Services.AddScoped<PaginationService>();
+
 
 
 builder.Services.AddHttpContextAccessor();

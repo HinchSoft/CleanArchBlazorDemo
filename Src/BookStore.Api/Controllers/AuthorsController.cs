@@ -19,7 +19,7 @@ namespace BookStore.Api.Controllers
         [HttpGet]
         public IAsyncEnumerable<Author> GetAuthors()
         {
-            return _authorRepository.GetAllAsync(a => a.MapToDto());
+            return _authorRepository.GetAllAsync<Author>();
         }
 
         [HttpPut]

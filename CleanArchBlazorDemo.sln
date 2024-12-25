@@ -30,6 +30,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainTests", "Tests\DomainTests\DomainTests.csproj", "{1CD23992-843F-4493-B82E-9C284DD3D4C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{D7B63C99-CF26-41BC-9277-6827B250D4B1}"
+	ProjectSection(SolutionItems) = preProject
+		Shared\Readme.md = Shared\Readme.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonCore", "Shared\CommonCore\CommonCore.csproj", "{7A91554C-0CFF-4C31-8CC0-DB3C4C5D9072}"
 EndProject
