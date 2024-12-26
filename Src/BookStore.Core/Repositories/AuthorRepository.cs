@@ -14,20 +14,26 @@ public sealed class AuthorRepository
 {
     private readonly IRepository<Author> _repository;
     private readonly PaginationService _paginationService;
+    private readonly MapService<Author> _mapService;
+
 
     public AuthorRepository(IRepository<Author> repository,
-        PaginationService paginationService)
+        PaginationService paginationService,
+        MapService<Author> mapService)
     {
         _repository = repository;
         _paginationService = paginationService;
+        _mapService = mapService;
     }
 
-    public IAsyncEnumerable<T> GetAllAsync<T>(Expression<Func<Author, T>> map)
+    public IAsyncEnumerable<T> GetAllAsync<T>()
     {
+        var mapper = _mapService.GetMapper<T>();
+
         var query = _repository.GetQueryable();
         query=_paginationService.Paginate(query);
 
-        return _repository.AsAsyncEnumerable(query.Select(map));
+        return _repository.AsAsyncEnumerable(query.Select(m=>mapper.ToDto(m)));
     }
 
 }
