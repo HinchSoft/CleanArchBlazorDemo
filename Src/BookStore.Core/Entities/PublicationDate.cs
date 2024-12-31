@@ -33,7 +33,7 @@ public abstract class PublicationDate
 public class FullDate(DateOnly date) : PublicationDate
 {
     public DateOnly Date { get; } = date;
-    public override DateOnly Beginning => date;
+    public override DateOnly Beginning => Date;
     public override string ToString()
     {
         return Date.ToString("yyyy/MM/dd");

@@ -16,6 +16,7 @@ public abstract class PublicationInfo
             "Published" => new Published(publicationDate),
             "Planned" => new Planned(publicationDate),
             "NotPlannedYet" => new NotPlannedYet(),
+            _ => throw new NotSupportedException()
         };
     }
 }

@@ -13,12 +13,12 @@ namespace BookStore.Core.Repositories;
 public sealed class AuthorRepository
 {
     private readonly IRepository<Author> _repository;
-    private readonly PaginationService _paginationService;
+    private readonly PaginationService<Author> _paginationService;
     private readonly MapService<Author> _mapService;
 
 
     public AuthorRepository(IRepository<Author> repository,
-        PaginationService paginationService,
+        PaginationService<Author> paginationService,
         MapService<Author> mapService)
     {
         _repository = repository;
@@ -31,6 +31,8 @@ public sealed class AuthorRepository
         var mapper = _mapService.GetMapper<T>();
 
         var query = _repository.GetQueryable();
+        query=_paginationService.Filtering(query,mapper);
+        query=_paginationService.Ordering(query, mapper);
         query=_paginationService.Paginate(query);
 
         return _repository.AsAsyncEnumerable(query.Select(m=>mapper.ToDto(m)));

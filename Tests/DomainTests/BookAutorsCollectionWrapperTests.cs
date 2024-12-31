@@ -6,13 +6,13 @@ namespace DomainTests
     public class BookAutorsCollectionWrapperTests
     {
         private Author[] _authors = {
-            new Author {Id=1,FullName="Test 1" },
-            new Author {Id=2,FullName="Test 2" },
-            new Author {Id=3,FullName="Test 3" }
+            new Author {Id=1,LastName="Test", FirstName="One"},
+            new Author {Id=2,LastName="Test", FirstName="Two"},
+            new Author {Id=3,LastName="Test", FirstName="Three"},
         };
         private Author[] _authors2 = {
-            new Author {Id=4,FullName="Test 4" },
-            new Author {Id=5,FullName="Test 5" }
+            new Author {Id=4,LastName="Test", FirstName="Four"},
+            new Author {Id=5,LastName="Test", FirstName="Five"},
         };
 
         [Fact]

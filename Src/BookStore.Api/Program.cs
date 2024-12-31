@@ -11,15 +11,11 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddNpgsqlDbContext<BookStoreContext>("BooksDb");
-
 builder.Services.AddRepositories();
 builder.Services.AddScoped<AuthorRepository>();
 builder.Services.AddMapping();
 
-builder.Services.AddScoped<IPageInfoProvider,PageInfoProvider>();
-builder.Services.AddScoped<PaginationService>();
-
-
+builder.AddApiPagination();
 
 builder.Services.AddHttpContextAccessor();
 

@@ -2,7 +2,8 @@
 
 public record Author
 (
-    String FullName,
+    string FirstName,
+    string LastName,
     DateTime DateOfBirth
 );
 
