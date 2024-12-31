@@ -10,6 +10,7 @@ namespace CommonCore.Services
 {
     public interface IMapper 
     {
+        string NameFromDto(string name);
     }
 
     public interface IMapper<TMod,TDto>:IMapper where TMod:Entity

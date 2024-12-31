@@ -11,6 +11,7 @@ namespace CommonCore.Services;
 
 public abstract class MapperBase<TMod, TDto> : IMapper<TMod, TDto> where TMod : Entity
 {
+    public abstract string NameFromDto(string name);
     public abstract TDto ToDto(TMod mod);
 
 }

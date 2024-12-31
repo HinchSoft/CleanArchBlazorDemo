@@ -1,10 +1,25 @@
 @BookStore.Api_HostAddress = https://localhost:7212
 
-GET {{BookStore.Api_HostAddress}}/Authors?page=5&per_page=10
+### This should return 10 starting at page 2
+GET {{BookStore.Api_HostAddress}}/Authors?page=2&per_page=10
 Accept: application/json
 
-###
+### This should return 30 starting at page 1
 GET {{BookStore.Api_HostAddress}}/Authors
 Accept: application/json
 
+### this will order the result by Last Name ascending
+GET {{BookStore.Api_HostAddress}}/Authors?orderby=lastname
+Accept: application/json
 
+### this will order the result by last name then first name ascending
+GET {{BookStore.Api_HostAddress}}/Authors?orderby=LastName(asc),FirstName
+Accept: application/json
+
+### this will order the result by last name descending
+GET {{BookStore.Api_HostAddress}}/Authors?orderby=LastName(desc)
+Accept: application/json
+
+### this will filter the result by last name not Jones
+GET {{BookStore.Api_HostAddress}}/Authors?filter=LastName!=Jones
+Accept: application/json

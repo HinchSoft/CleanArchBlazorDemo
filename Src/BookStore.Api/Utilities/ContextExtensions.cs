@@ -75,7 +75,8 @@ public static class ContextExtensions
         };
 
         var AuthorFaker = new Faker<Author>()
-            .RuleFor(c => c.FullName, f => f.Name.FullName())
+            .RuleFor(c => c.FirstName, f => f.Name.FirstName())
+            .RuleFor(c => c.LastName, f => f.Name.LastName())
             .RuleFor(c => c.DateOfBirth, f => f.Date.Past(100, DateTime.UtcNow.AddYears(-16)));
 
         var publisherFaker = new Faker<Publisher>()

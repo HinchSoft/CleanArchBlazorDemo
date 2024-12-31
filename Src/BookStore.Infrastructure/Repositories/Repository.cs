@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,5 +48,40 @@ public class Repository<TEntity>: IRepository<TEntity>
     public IAsyncEnumerable<T> AsAsyncEnumerable<T>(IQueryable<T> query)
     {
         return query.AsAsyncEnumerable();
+    }
+
+    public IQueryable<TEntity> ApplyOrderingByName(string field, bool asc, IQueryable<TEntity> query)
+    {
+        //when ordering the first order returns a IOrderedQueryable that additional ordering 
+        // should be appended to.
+        IOrderedQueryable<TEntity>? sortOrder = query as IOrderedQueryable<TEntity>;
+
+        if (sortOrder is null)
+        {
+            if (asc)
+                sortOrder = query.OrderBy(p => EF.Property<TEntity>(p, field));
+            else
+                sortOrder = query.OrderByDescending(p => EF.Property<TEntity>(p, field));
+        }
+        else
+        {
+            if (asc)
+                sortOrder = sortOrder.ThenBy(p => EF.Property<TEntity>(p, field));
+            else
+                sortOrder = sortOrder.ThenByDescending(p => EF.Property<TEntity>(p, field));
+        }
+
+        return sortOrder;
+    }
+
+    public IQueryable<TEntity> ApplyFilteringByName(string field, string op,string value, IQueryable<TEntity> query)
+    {
+        return op switch
+        {
+            "=" => query.Where(p => EF.Property<string>(p, field) == value),
+            "!=" => query.Where(p => EF.Property<string>(p, field) != value),
+            _ => query
+        };
+
     }
 }

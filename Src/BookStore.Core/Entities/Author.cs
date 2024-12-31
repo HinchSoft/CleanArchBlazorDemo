@@ -9,7 +9,9 @@ namespace BookStore.Domain.Model;
 
 public class Author:Entity
 {
-    public string FullName { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+
     public DateTime DateOfBirth { get; set; }
 
     public int Order { get; set; }
