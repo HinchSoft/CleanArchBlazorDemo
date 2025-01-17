@@ -10,7 +10,8 @@ public interface IRepository<TEntity>
     where TEntity : Entity
 {
     void Add(TEntity entity);
-    IQueryable<TEntity> ApplyOrderingByName(string field, bool asc, IQueryable<TEntity> query);
+    IOrderedQueryable<TEntity> ApplyOrderingByName(string field, bool asc, IQueryable<TEntity> query);
+    IOrderedQueryable<TEntity> ApplyOrderingByName(string field, bool asc, IOrderedQueryable<TEntity> query);
     IQueryable<TEntity> ApplyFilteringByName(string field, string op, string value, IQueryable<TEntity> query);
     IAsyncEnumerable<T> AsAsyncEnumerable<T>(IQueryable<T> query);
     Task<TEntity?> GetByIdAsync(int id);
