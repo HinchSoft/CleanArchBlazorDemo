@@ -39,12 +39,38 @@ public class PaginationService<TEntity> where TEntity:Entity
 
             query = _repository.ApplyFilteringByName(fieldName, field.Operator, field.Value , query);
         }
-
-
         return query;
     }
 
-    public IQueryable<TEntity> Ordering(IQueryable<TEntity> query, IMapper mapper)
+    public IOrderedQueryable<TEntity> Ordering(IQueryable<TEntity> query, IMapper mapper)
+    {
+        bool def = true;
+
+        IOrderedQueryable<TEntity> ret = query.OrderBy(t=>t.Id);
+
+        Type entityType = typeof(TEntity);
+
+        foreach (var field in _paginationInfo.OrderBy)
+        {
+            var fieldName = mapper.NameFromDto(field.Field);
+            if (entityType.GetProperty(fieldName) == null)
+                continue;
+
+            bool asc = field.Operator.ToLower() != "desc";
+
+            if (def)
+            {
+                ret = _repository.ApplyOrderingByName(fieldName, asc, query);
+                def = false;
+            }
+            else
+                ret = _repository.ApplyOrderingByName(fieldName, asc, ret);
+        }
+
+        return ret;
+    }
+
+    public IOrderedQueryable<TEntity> Ordering(IOrderedQueryable<TEntity> query, IMapper mapper)
     {
         if(_paginationInfo.OrderBy.Count()==0)
             return query;
@@ -76,11 +102,11 @@ public class PaginationService<TEntity> where TEntity:Entity
             perPage=defPageSize;
             pageNo = 1;
         }
-
+        
         if (pageNo > 0 && perPage > 0)
         {
-            if (query is not IOrderedQueryable<T>)
-                query = query.OrderBy(e => e.Id);
+
+            query = query.OrderBy(e => e.Id);
 
             var tot = query.Count();
 
@@ -93,7 +119,36 @@ public class PaginationService<TEntity> where TEntity:Entity
         }
 
         return query;
+    }
 
+    public IQueryable<T> Paginate<T>(IOrderedQueryable<T> query)
+        where T : Entity
+    {
+        var defPageSize = _options.Value.DefaultPageSize;
+
+        var perPage = _paginationInfo.PerPage;
+        var pageNo = _paginationInfo.Page;
+        if (defPageSize > 0 && perPage==0)
+        {
+            perPage=defPageSize;
+            pageNo = 1;
+        }
+
+        if (pageNo > 0 && perPage > 0)
+        {
+            query=query.ThenBy(e => e.Id);
+
+            var tot = query.Count();
+
+            _paginationInfo.PageCount = (int)Math.Ceiling((double)tot / perPage);
+
+            var take = perPage;
+            var skip = (pageNo - 1) * take;
+
+            return query.Skip(skip).Take(take);
+        }
+
+        return query;
     }
 
 }

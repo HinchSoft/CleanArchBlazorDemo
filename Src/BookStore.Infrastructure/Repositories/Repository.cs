@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.Infrastructure.Repositories;
 
-public class Repository<TEntity>: IRepository<TEntity>
+public class Repository<TEntity> : IRepository<TEntity>
     where TEntity : Entity
 {
     private readonly BookStoreContext _context;
@@ -32,7 +32,7 @@ public class Repository<TEntity>: IRepository<TEntity>
 
     public void Add(TEntity entity)
     {
-         _context.Set<TEntity>().Add(entity);
+        _context.Set<TEntity>().Add(entity);
     }
 
     public void Update(TEntity entity)
@@ -50,31 +50,7 @@ public class Repository<TEntity>: IRepository<TEntity>
         return query.AsAsyncEnumerable();
     }
 
-    public IQueryable<TEntity> ApplyOrderingByName(string field, bool asc, IQueryable<TEntity> query)
-    {
-        //when ordering the first order returns a IOrderedQueryable that additional ordering 
-        // should be appended to.
-        IOrderedQueryable<TEntity>? sortOrder = query as IOrderedQueryable<TEntity>;
-
-        if (sortOrder is null)
-        {
-            if (asc)
-                sortOrder = query.OrderBy(p => EF.Property<TEntity>(p, field));
-            else
-                sortOrder = query.OrderByDescending(p => EF.Property<TEntity>(p, field));
-        }
-        else
-        {
-            if (asc)
-                sortOrder = sortOrder.ThenBy(p => EF.Property<TEntity>(p, field));
-            else
-                sortOrder = sortOrder.ThenByDescending(p => EF.Property<TEntity>(p, field));
-        }
-
-        return sortOrder;
-    }
-
-    public IQueryable<TEntity> ApplyFilteringByName(string field, string op,string value, IQueryable<TEntity> query)
+    public IQueryable<TEntity> ApplyFilteringByName(string field, string op, string value, IQueryable<TEntity> query)
     {
         return op switch
         {
@@ -83,5 +59,21 @@ public class Repository<TEntity>: IRepository<TEntity>
             _ => query
         };
 
+    }
+
+    IOrderedQueryable<TEntity> IRepository<TEntity>.ApplyOrderingByName(string field, bool asc, IQueryable<TEntity> query)
+    {
+        if (asc)
+            return query.OrderBy(p => EF.Property<TEntity>(p, field));
+        else
+            return query.OrderByDescending(p => EF.Property<TEntity>(p, field));
+    }
+
+    public IOrderedQueryable<TEntity> ApplyOrderingByName(string field, bool asc, IOrderedQueryable<TEntity> query)
+    {
+        if (asc)
+            return query.ThenBy(p => EF.Property<TEntity>(p, field));
+        else
+            return query.ThenByDescending(p => EF.Property<TEntity>(p, field));
     }
 }
